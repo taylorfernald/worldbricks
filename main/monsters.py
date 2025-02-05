@@ -25,7 +25,7 @@ Elemental = {
     "Numbers": 1,
     "Level": 5,
     "CC": "o",
-    "Types": "o"
+    "Types": "s"
 }
 KingLizard = {
     "Name": "King Lizard",
@@ -90,6 +90,28 @@ MetalSlime = {
     "CC": "v",
     "Types": ""
 }
+Infantry = {
+    "Name": "Infantry",
+    "Numbers": 20,
+    "Level": 1,
+    "CC": "v",
+    "Types": "m"
+}
+Archer = {
+    "Name": "Archer",
+    "Numbers": 10,
+    "Level": 2,
+    "CC": "v",
+    "Types": "r"
+}
+Calvary = {
+    "Name": "Calvary",
+    "Numbers": 5,
+    "Level": 3,
+    "CC": "v",
+    "Types": "m"
+}
 
 #List of all of the monsters
 MonsterList = [Dragon, Goblin, Demon, Elemental, Hunter, Knight, KingLizard, Lich, Archon, Roc, Urion, MetalSlime, KingBull]
+DefenderList = [Infantry, Archer, Calvary]

@@ -1,6 +1,8 @@
 import pygame as pg
 import random
 from words import *
+from resources import *
+
 class TransferRooms():
     def __init__(self):
         pass
@@ -118,7 +120,7 @@ class Info():
     def draw(self):
         self.update()
         text = self.font.render(self.arr[self.index], True, self.color)
-        self.screen.blit(text, (self.screen.get_width()/4, self.screen.get_height()/3*2))
+        self.screen.blit(text, (self.screen.get_width()/3, self.screen.get_height()/4*3))
     def get_ready(self):
         return self.arr[self.index] == "!"
 class Party():
@@ -129,8 +131,14 @@ class Party():
         self.color = color
     def draw(self):
         for i, character in enumerate(self.partyList):
-            text = self.font.render(character.name + " " + str(character.level) + " " + character.attackingtype, True, self.color)
+            text = self.font.render(character.name + " " + str(character.level), True, self.color)
             self.screen.blit(text, (self.screen.get_width()/4*3, self.screen.get_height()/3+(text.get_height() * i)))
+            #Draw the attacking type seperately
+            if character.attackingtype == "m": attacking_sprite = melee
+            elif character.attackingtype == "r": attacking_sprite = ranged
+            else: attacking_sprite = magic
+
+            self.screen.blit(attacking_sprite, (self.screen.get_width()/4*3 - 20, self.screen.get_height()/3+(text.get_height() * i)))
 class Monster():
     def __init__(self, screen, font, color):
         self.screen = screen
@@ -144,8 +152,12 @@ class Monster():
         if self.monster:
             text = self.font.render(str(self.monster["Numbers"]) + " x " + self.monster["Name"] + " L" + str(self.monster["Level"]), True, self.color)
             self.screen.blit(text, (self.screen.get_width()/4, self.screen.get_height()/2))
+            #TODO: put the attacking symbol in the right place
             tags = self.font.render(self.monster["Types"] + " : " + str(self.monster["CC"]), True, self.color)
-            self.screen.blit(tags, (self.screen.get_width()/4, self.screen.get_height()/2+50))
+            #Print the icons
+            self.screen.blit(letter_to_tag[self.monster["Types"]], (self.screen.get_width()/4, self.screen.get_height()/2+40))
+            for i, letter in enumerate(self.monster["CC"]):
+                self.screen.blit(letter_to_tag[letter], (self.screen.get_width()/4 + (i*ICON_SIZE[0]), self.screen.get_height()/2+54))
 class UI():
     def __init__(self, screen, font, partyList, monster, torches):
         self.partyList = partyList

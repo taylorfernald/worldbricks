@@ -1,0 +1,8 @@
+Welcome to World Bricks!
+
+A<==2===>D
+
+--STRUCTURES--
+Lair: Holds a single type of creature
+Dungeon: Holds a variety of creatures
+Stronghold: Holds an encounter made by another player. Holds their money.

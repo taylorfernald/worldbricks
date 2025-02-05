@@ -1,0 +1,15 @@
+Welcome to World Bricks!
+
+A<0=====>D
+
+<ESC to exit this screen>
+
+You control a party of up to four people that go on an adventure!
+
+--CONTROLS--
+
+WSAD - Use up a ration and move to an adjacent hex
+ENTER - Enter a Lair, Dungeon, or Stronghold
+R SHIFT - Spend 1 gold and restore all resources
+L SHIFT - Hire hirelings and party members
+ESCAPE or eXit - Save and Quit

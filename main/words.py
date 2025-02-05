@@ -9,7 +9,7 @@ Names = []
 Classes = []
 
 def loadLists():
-    path = "words.txt"
+    path = "main/words.txt"
     file = open(path, "r")
     #Animals
     for i in range(int(file.readline())):

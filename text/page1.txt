@@ -1,0 +1,10 @@
+Welcome to World Bricks!
+
+A<=1====>D
+
+--RESOURCES--
+
+Rations: How many hexes you can move
+Torches: How may times you can enter a dungeon or Lair
+Gold: Currency. Use to hire, refresh, and make a Stronghold.
+Hirelings: People hired to carry resources. Increases maximums.
