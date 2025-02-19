@@ -1,3 +1,4 @@
-FROM worldbricks-base
-WORKDIR "/worldbricks/worldbricks-server"
+FROM node
+WORKDIR "/worldbricks-server"
+COPY . .
 RUN ng serve
