@@ -1,5 +1,6 @@
-FROM node
-RUN npm install -g @angular/cli
-WORKDIR "/worldbricks-server"
-COPY . .
-RUN ng serve
+FROM node:latest
+WORKDIR /worldbricks-server/src/app
+COPY package.json .
+RUN npm install
+COPY . ./
+CMD [ "npm", "start" ]
