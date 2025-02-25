@@ -1,0 +1,31 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - worldbricks-server
+      - .
+    entrypoint: docker
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - tag
+      - worldbricks-server
+      - us-east1-docker.pkg.dev/advanced-se-2025-fernald/restful/restful-app
+    entrypoint: docker
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - us-east1-docker.pkg.dev/advanced-se-2025-fernald/restful/restful-app
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'restful-app'
+      - --image
+      - us-east1-docker.pkg.dev/advanced-se-2025-fernald/restful/restful-app
+      - --region
+      - 'us-east1'
+      - --allow-unauthenticated
+options:
+  logging: CLOUD_LOGGING_ONLY
