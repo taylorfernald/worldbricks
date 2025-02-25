@@ -57,10 +57,12 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "worldbricks:build:production"
+              "buildTarget": "worldbricks:build:production",
+              "allowedHosts": ["worldbricks-906949648363.us-east1.run.app"]
             },
             "development": {
-              "buildTarget": "worldbricks:build:development"
+              "buildTarget": "worldbricks:build:development",
+              "allowedHosts": ["worldbricks-906949648363.us-east1.run.app"]
             }
           },
           "defaultConfiguration": "development"
