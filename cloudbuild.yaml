@@ -21,7 +21,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'restful-app'
+      - 'worldbricks'
       - --image
       - us-east1-docker.pkg.dev/advanced-se-2025-fernald/worldbricks/worldbricks-server
       - --region
