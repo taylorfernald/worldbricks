@@ -20,7 +20,7 @@ class RestClient():
         self.userkey = username + password
     def get_user_info(self):
         #Using the userkey, get the user info
-        response = requests.get(self.url + f"/{self.userkey}")
+        response = requests.get(self.url + f"/{self.userkey}/info")
         if not response: 
             print("Error, no response")
         return response

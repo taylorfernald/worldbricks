@@ -36,7 +36,7 @@ hirelings = 0
 max_hirelings = 4
 
 #Connection Information
-server_url = "https://localhost"
+server_url = "https://worldbricks-906949648363.us-east1.run.app/"
 
 #states / screens
 class MainStates(Enum):
