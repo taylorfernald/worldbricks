@@ -190,7 +190,7 @@ class WorldMap():
         #If there is no location, location has already been checked, or location is occupied
         #Choose another location
         #If we somehow go through all of the hexes on the map, then return False
-        while not location or location in self.checkedLocations or location.token:
+        while not location or location in checkedLocations or location.token:
             location = self.getRandomHex()
             self.locations.append(location)
             if len(checkedLocations) == len(self.hexes): return False
