@@ -7,7 +7,7 @@ const port = 4000;
 //Make CORS not an issue
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", 
-               "https://worldbricks-906949648363.us-east1.run.app:8080");
+               "http://localhost:8080");
     res.header("Access-Control-Allow-Headers", 
                "Origin, X-Requested-With, Content-Type, Accept");
     next();
