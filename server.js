@@ -1,11 +1,13 @@
 const express = require('express');
 const app = express();
 const port = 4000;
+//dev: http://localhost:8080
+//prod: https://worldbricks-906949648363.us-east1.run.app/
 
 //Make CORS not an issue
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", 
-               "http://localhost:8080");
+               "https://worldbricks-906949648363.us-east1.run.app");
     res.header("Access-Control-Allow-Headers", 
                "Origin, X-Requested-With, Content-Type, Accept");
     next();
