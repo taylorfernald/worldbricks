@@ -13,7 +13,7 @@ export class ApiService {
     constructor(private http: HttpClient) { }
     forwardGET(path: string) {
         return this.http.get(
-            `api/${path}`,
-            {responseType: 'json'});
+            `http://localhost:4000/api/${path}`,
+            {responseType: 'text'});
     }
 }
