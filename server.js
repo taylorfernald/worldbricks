@@ -1,4 +1,5 @@
 const express = require('express');
+const { usersReadOne } = require('./src/app/database/data-controller');
 const app = express();
 const port = 4000;
 //dev: http://localhost:8080
@@ -22,11 +23,7 @@ app.get('/api/', (req, res) => {
     })
 })
 
-app.get('/api/userkey/info', (req, res) => {
-    res.json({message:
-        "Info GET recieved"
-    });
-});
+app.get('/api/:userid/info', usersReadOne);
 
 app.get('/api/userkey/getworld', (req, res) => {
     res.json({message:

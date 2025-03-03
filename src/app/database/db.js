@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const dbURL = 'mongodb://localhost:27017/;    
+const dbURL = 'mongodb://localhost:27017/Worldbricks/';    
 
+//Export the connect function so it actually runs
 const connect = () => {
   setTimeout(() => mongoose.connect(dbURL, { useNewUrlParser: true, dbName: 'Worldbricks' }), 1000);
 }      
@@ -45,7 +46,6 @@ process.on('SIGTERM', () => {
   });                                                    
 });   
 
-connect();
-
 //Require the schemas
-require('./users');
+require('./user');
+exports.connect = connect;

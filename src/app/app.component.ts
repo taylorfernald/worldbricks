@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   constructor(private apiService: ApiService) {};
   ngOnInit() {
       console.log("Made it to OnInit function");
-      this.apiService.forwardGET('userkey/info').subscribe(data => {
+      this.apiService.forwardGET('67c0a8171abe9aa514aadf4e/info').subscribe(data => {
         this.message = data;
       })
   }
