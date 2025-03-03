@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-//const dbURL = 'mongodb://localhost:27017/Worldbricks/';  
-const dbURL = 'mongodb+srv://cpsproductions7:SVEcZ1kQ1MSHUiqg@cluster0.qo04e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const dbURL = 'mongodb://localhost:27017/Worldbricks/';  
+//const dbURL = 'mongodb+srv://cpsproductions7:SVEcZ1kQ1MSHUiqg@cluster0.qo04e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 //Export the connect function so it actually runs
 const connect = () => {
