@@ -1,4 +1,5 @@
 import sys
+from constants import *
 #List of words / phrases sorted by category
 Animals = []
 Settlements = []
@@ -9,7 +10,7 @@ Names = []
 Classes = []
 
 def loadLists():
-    path = "main/words.txt"
+    path = WORDS
     file = open(path, "r")
     #Animals
     for i in range(int(file.readline())):

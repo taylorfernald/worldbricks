@@ -6,6 +6,7 @@ from monsters import *
 from resources import *
 import monsters
 from words import *
+from table import Table
 
 #Everything that goes on the map is put in this file. Also handles a class that represents the world
 # (and can perform functions on it)
@@ -83,11 +84,11 @@ class Settlement(Marker): #You can spend gold to generate a new dungeon
             newHex = random.choice(Hexes)
         return Lair(self.surface, newHex, lair, "New Lair", self.group)
 class Lair(Marker):
-    def __init__(self, surface, Hex, image, name, group, camera):
-        super().__init__(surface, Hex, image, name, group, camera)
+    def __init__(self, surface, Hex, name, group, camera):
+        super().__init__(surface, Hex, lair, name, group, camera)
 class Dungeon(Marker):
-    def __init__(self, surface, Hex, image, name, group, camera):
-        super().__init__(surface, Hex, image, name, group, camera)
+    def __init__(self, surface, Hex, name, group, camera):
+        super().__init__(surface, Hex, dungeon, name, group, camera)
 class Stronghold(Marker): #A player-made structure that can be attacked
     def __init__(self, surface, Hex, name, group, camera, type=0, numbers=1, money = 0):
         super().__init__(surface, Hex, stronghold, name + "'s Stronghold", group, camera)
@@ -107,6 +108,8 @@ class WorldMap():
         self.imax = imax
         self.jmax = jmax
         self.camera = camera
+        self.markerGroup = [] #A list of all markers
+        self.monsterList = Table(MonsterList)
     def loadMap(self):
         ###Gets all of the information it needs from the Server and puts it in this class.
         pass
@@ -153,10 +156,10 @@ class WorldMap():
             nextHexes = self.grabNearbyHexes(iHex)
             for h in nextHexes:
                 self.runMountainsAlgorithm(self.hexes[h], h, newIColor, change)
-    def generateEncounter(self, Table, Hex):
+    def generateEncounter(self, Hex):
         if not Hex.token:
             #Use the monster table to make an encounter. Gives the encounter back.
-            return monsters.generateItem()
+            return self.monsterList.generateItem()
     def getRandomHex(self):
         ix = random.randint(0, self.imax-1)
         iy = random.randint(0, self.jmax-1)

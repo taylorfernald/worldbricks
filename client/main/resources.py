@@ -36,7 +36,6 @@ letter_to_tag = {
 #Text portions for the tutorial pages
 tutorial_pages = []
 total_pages = 3
-pages_path = "text/page"
 for i in range(total_pages):
     f = open(pages_path+str(i)+".txt")
     tutorial_pages.append(f.readlines())

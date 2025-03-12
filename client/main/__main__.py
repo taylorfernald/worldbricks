@@ -43,11 +43,14 @@ class PartyUI(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = pos
         group.append(self)
+    def setUser(self, user):
+        ###Set a new User and update all of the information
+        self.user = user
     def renderText(self, screen):
         text = [self.user.displayname + "'s Party: "]
         textarr = []
         for character in self.user.partyList:
-            text.append(character.name + " " + character.descriptor + " " + str(character.level))
+            text.append(character["name"] + " " + character["occupation"] + " " + str(character["level"]))
         for t in text:
             textarr.append(font.render(t, True, WHITE))
         return textarr
@@ -115,7 +118,7 @@ testMap = Map(screen, font, partyGroup, rations)
 def checkForEncounters():
     percent = 10
     if random.randint(1, 100) < percent:
-        Lair(screen, world.getHex(index), lair, world.generateEncounter(monsters, world.getHex(index)), markerGroup, camera)
+        Lair(screen, world.getHex(index), world.generateEncounter(monsters, world.getHex(index)), markerGroup, camera)
 
 def move(change, index):
     if world.checkBoundaries(index, change):
@@ -330,17 +333,22 @@ while running:
 
         pg.display.flip()
 
-        rest.verify_user_key(user.displayname, user.password)
+        #rest.verify_user_key(user.displayname, user.password)
 
         #Setup the user object
         user = User(rest.get_user_info())
-        print("User key is: " + rest.userkey)
+        print(user.displayname)
+
+        #Tell the other objects about the new user
+        partyUI.setUser(user)
         #For now, skip to the gameplay
         mainState = MainStates.HEXCRAWL
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+
+rest.save_user_info(user)
 pg.quit()
 
 

@@ -1,5 +1,5 @@
 const express = require('express');
-const { usersReadOne } = require('./src/app/database/data-controller');
+const { usersReadOne, usersUpdateOne } = require('./src/app/database/data-controller');
 const app = express();
 const port = 4000;
 //dev: http://localhost:8080
@@ -43,11 +43,7 @@ app.put('/api/userkey/stronghold/position', (req, res) => {
     });
 });
 
-app.put('/api/userkey/save', (req, res) => {
-    res.json({message:
-        "Info PUT recieved"
-    });
-});
+app.put('/api/:userid/save', usersUpdateOne);
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);

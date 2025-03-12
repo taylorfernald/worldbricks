@@ -11,8 +11,9 @@ mountain_color = (255, 150, 150)
 hill_color = (255, 200, 200)
 beach_color = (242,210,169)
 water_color = (100, 100, 255)
-IMAGES = "images/"
-TAGS = "images/tags/"
+ROOT = "worldbricks/client/"
+IMAGES = ROOT + "images/"
+TAGS = IMAGES + "tags/"
 
 #Size stuff
 TILE_WIDTH = 50
@@ -36,7 +37,10 @@ hirelings = 0
 max_hirelings = 4
 
 #Connection Information
-server_url = "https://worldbricks-906949648363.us-east1.run.app/"
+server_url = "http://localhost:4000/api/"
+
+pages_path = ROOT + "text/page"
+WORDS = ROOT + "main/words.txt"
 
 #states / screens
 class MainStates(Enum):
