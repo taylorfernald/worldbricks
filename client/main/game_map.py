@@ -1,3 +1,4 @@
+import json
 import math 
 from constants import *
 import pygame as pg
@@ -12,11 +13,15 @@ from table import Table
 # (and can perform functions on it)
 
 class Hex():
-    def __init__(self, surface, color, outline_color, position):
+    # TODO: Change this from position based coordinates to an index based coordinates
+    #       To find the position, use the index plus the map tile width
+    def __init__(self, surface, color, outline_color, index):
+        self.index = index #Where the hex is when it is put into a list
         self.surface = surface
         self.color = color
         self.outline_color = outline_color
         self.radius = TILE_WIDTH
+        position = (index % MAP_SIZE[0], math.floor(index / MAP_SIZE[1]))
         self.position = (
             TILE_SCALE[0]+(position[0]*hex_distance*0.9), #How far each hex center is apart on the x axis
             TILE_SCALE[1]+
@@ -35,8 +40,11 @@ class Hex():
         ]
         pg.draw.polygon(self.surface, self.color, points)
         pg.draw.polygon(self.surface, self.outline_color, points, self.width)
-        #TODO: Move the marker drawing code to here, since each hex can have one marker object
+
         if self.token: self.token.draw(self.surface)
+    def toJSON(self):
+        #The only two things that would be cared about are color. Position can be figured out later
+        return '{"color": ' + str(list(self.color)) + ', "index": ' + str(self.index) + '}'
 class Faction():
     def __init__(self, name, pos):
         self.name = name
@@ -73,6 +81,9 @@ class Marker(pg.sprite.Sprite):
         #If the marker is a part of a faction, display its name
         if self.faction:
             screen.blit(self.faction.nameReady, self.rect.midtop)
+    def toJSON(self):
+        ### Each marker has a hex POSITION that it belongs to (position so we avoid circular references)
+        return '{"position" : ' + str(list(self.getHex().position)) + ', "type" : "' + str(type(self).__name__) + '", "name": "' + str(self.name) + '"}'
 class Settlement(Marker): #You can spend gold to generate a new dungeon
     def __init__(self, surface, Hex, image, name, group, camera):
         super().__init__(surface, Hex, image, name, group, camera)
@@ -98,35 +109,51 @@ class Stronghold(Marker): #A player-made structure that can be attacked
         #Defeating the stronghold gives this much money.
         self.stash = money
 
+#Camera goes here
+class Camera():
+    def __init__(self, index):
+        #Which index to focus on
+        self.index = index
+    def getOffset(self):
+        #Get the tuple position away from the origin (0, 0)
+        return (0, 0)
+
+
 class WorldMap():
-    def __init__(self, imax, jmax, screen, camera):
+    def __init__(self, screen):
         #Setup info
+        self.screen = screen
+        self.imax=MAP_SIZE[0]
+        self.jmax=MAP_SIZE[1]
         self.hexes = []
+
+        self.generate()
+
         self.locations = [] #A list of all locations. For checking every location
         self.imax, self.jmax = MAP_SIZE
-        self.screen = screen
-        self.imax = imax
-        self.jmax = jmax
-        self.camera = camera
-        self.markerGroup = [] #A list of all markers
+        self.index = random.randint(0, (MAP_SIZE[0] * MAP_SIZE[1]) - 1) #where the party is rn
+        self.camera = Camera(self.index)
+        self.markerGroup = pg.sprite.Group()
         self.monsterList = Table(MonsterList)
-    def loadMap(self):
-        ###Gets all of the information it needs from the Server and puts it in this class.
-        pass
+    def loadMap(self, map):
+        ###Using server hex information, create a hex map
+        for hex in map['hexes']:
+            self.hexes.append(Hex(self.screen, hex['color'], BLACK, hex['index']))
+        for marker in map['markers']:
+            Marker(self.screen, self.verifyRandomHex(), marker['type'], marker['name'], self.markerGroup, self.camera)
+    
     def generate(self):
-        #Make the map then return it
+        #Make the map
         self.make_hex_map()
         startingHexIndex = random.randint(0, len(self.hexes)-1)
         self.runMountainsAlgorithm(self.hexes[startingHexIndex], startingHexIndex, 0, 1)
-        return 0
     def reset(self):
         #Generate wrapper that shows a warning beforehand.
         return self.generate()
     def make_hex_map(self):
         #Make the hex map; make each hex in the right position
-        for j in range(self.jmax):
-            for i in range(self.imax):
-                self.hexes.append(Hex(self.screen, colors[-1], BLACK, (i, j)))
+        for i in range(MAP_SIZE[0] * MAP_SIZE[1]):
+            self.hexes.append(Hex(self.screen, colors[-1], BLACK, i))
 
     def clamp(self, n, minn, maxn):
         if n < minn:
@@ -201,3 +228,8 @@ class WorldMap():
         if setName == "": name = random.choice(Adjectives).capitalize() + " " + random.choice(Animals).capitalize()
         else: name = setName
         return structureClass(self.screen, location, name, self.markerGroup, self.camera)
+    def toJSON(self):
+        hexlist = ', '.join([hex.toJSON() for hex in self.hexes])
+        markerGroup = ', '.join([marker.toJSON() for marker in self.markerGroup])
+        ###Exports the class to JSON for network submission
+        return '{"hexes": [' + hexlist + '], "markerGroup": [' + markerGroup + ']}'

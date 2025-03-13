@@ -22,16 +22,6 @@ UIBackground.set_alpha(128)
 loadLists()
 #Activates if there is a UI on the screen that needs to be interacted with. Usually for textboxes or alerts.
 UI_active = False
-#Sprite Groups go here
-markerGroup = pg.sprite.Group()
-#Camera goes here
-class Camera():
-    def __init__(self, index):
-        #Which index to focus on
-        self.index = index
-    def getOffset(self):
-        #Get the tuple position away from the origin (0, 0)
-        return (0, 0)
 
 #UI for party members and HUD
 class PartyUI(pg.sprite.Sprite):
@@ -76,12 +66,7 @@ rest = RestClient(server_url)
 simulation = True
 width = TILE_WIDTH
 start = TILE_SCALE
-imax=MAP_SIZE[0]
-jmax=MAP_SIZE[1]
-index = random.randint(0, (MAP_SIZE[0] * MAP_SIZE[1]) - 1) #where the party is rn
-camera = Camera(index)
-world = WorldMap(imax, jmax, screen, camera)
-Hexes = world.generate()
+world = WorldMap(screen)
 currentPage = 0
 
 #Note, move this over to the server so it can just make a new map.
@@ -100,8 +85,8 @@ UIGroup = []
 factions = []
 for i in range(4):
     partyGroup.append(generatePartyMember())
-#The party needs to be drawn seperately
-party = Marker(screen, world.getHex(index), party, "party", markerGroup, camera)
+#The party needs to be drawn seperately but tracked here
+party = Marker(screen, world.getHex(world.index), party, "party", world.markerGroup, world.camera)
 
 #Strongholds
 for i in range(4):
@@ -118,7 +103,7 @@ testMap = Map(screen, font, partyGroup, rations)
 def checkForEncounters():
     percent = 10
     if random.randint(1, 100) < percent:
-        Lair(screen, world.getHex(index), world.generateEncounter(monsters, world.getHex(index)), markerGroup, camera)
+        world.placeStructure(Lair, world.getHex(index), world.generateEncounter(monsters, world.getHex(world.index)))
 
 def move(change, index):
     if world.checkBoundaries(index, change):
@@ -170,15 +155,15 @@ while running:
                         #Save and quit
                         running = False
                     elif event.key == pg.K_w:
-                        change = -imax
+                        change = -world.imax
                     elif event.key == pg.K_s:
-                        change = imax
+                        change = world.imax
                     elif event.key == pg.K_a:
                         change = -1
                     elif event.key == pg.K_d:
                         change = 1
-                    if change and world.checkBoundaries(index, change):
-                        index = move(change, index)
+                    if change and world.checkBoundaries(world.index, change):
+                        world.index = move(change, world.index)
                     if event.key == pg.K_RSHIFT and user.gold >= 1:
                         if isinstance(party.getHex().token, Stronghold):
                                 user.gold -= 1
@@ -208,7 +193,7 @@ while running:
                             #The defenses scale with how much money the stronghold has. 
                             if user.gold >= 1:
                                 user.gold -= 1000
-                                Stronghold(screen, party.getHex(), "Player", markerGroup, money=1000)
+                                Stronghold(screen, party.getHex(), "Player", world.markerGroup, world.camera, money=1000)
             if event.type == pg.QUIT:
                 running = False
 
@@ -336,9 +321,10 @@ while running:
         #rest.verify_user_key(user.displayname, user.password)
 
         #Setup the user object
-        user = User(rest.get_user_info())
-        print(user.displayname)
-
+        #It has a seperate field for the terrain. Grab it
+        user_info = rest.get_user_info()
+        user = User(user_info)
+        #world.loadMap(user_info['terrain'])
         #Tell the other objects about the new user
         partyUI.setUser(user)
         #For now, skip to the gameplay
@@ -348,7 +334,7 @@ while running:
             if event.type == pg.QUIT:
                 running = False
 
-rest.save_user_info(user)
+rest.save_user_info(user, world)
 pg.quit()
 
 

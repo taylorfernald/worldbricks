@@ -30,10 +30,6 @@ class RestClient():
             print(response)
             return response
         return 0
-    def get_world_info(self):
-        response = requests.get(self.url + f"/{self.userkey}/getworld")
-        #Gets the view of the world on behalf of the user
-        return response
     def set_stronghold(self, position):
         #Adds a new stronghold to the world at a position. The server needs to verify this.
         response = requests.post(self.url + f"/{self.userkey}/stronghold/{position}")
@@ -42,12 +38,18 @@ class RestClient():
         #The user destroyed the stronghold. Remove the money from it.
         response = requests.put(self.url + f"/{self.userkey}/stronghold/{position}")
         return response 
-    def save_user_info(self, user):
+    def save_user_info(self, user, worldmap = None):
         #Put the user's info on the server.
         #Note you do need to pass in the user here.
         print("Attempting a save to the server...")
-        response = requests.put(self.url + f"{self.userkey}/save", json=user.toJSON())
-        print(user.toJSON())
+
+        #We need to add a seperate field for the terrain.
+        userJson = user.toJSON()
+        if worldmap:
+            userJson = (userJson[:-1], userJson[-1:])
+            userJson = userJson[0] + ', "terrain": ' + worldmap.toJSON() + userJson[1]
+
+        response = requests.put(self.url + f"{self.userkey}/save", json=userJson)
         if response:
             print("Save successful")
         else:

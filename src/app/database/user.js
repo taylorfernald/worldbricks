@@ -13,6 +13,22 @@ const strongholdSchema = new mongoose.Schema({
   positionY: {type: Number, default: 0}
 })
 
+const hexSchema = new mongoose.Schema({
+  color: [Number],
+  index: Number
+})
+
+const markerSchema = new mongoose.Schema({
+  position: [Number],
+  type: String,
+  name: String
+})
+
+const terrainSchema = new mongoose.Schema({
+  hexes: [hexSchema],
+  markers: [markerSchema]
+})
+
 const userSchema = new mongoose.Schema({
   name: {                                 
     type: String,                         
@@ -23,7 +39,8 @@ const userSchema = new mongoose.Schema({
   hirelings : {type: Number, default: 0},
   party: [characterSchema],
   rations : {type: Number, default: 0},
-  stronghold: strongholdSchema
+  stronghold: strongholdSchema,
+  terrain: terrainSchema
 });
 
 const userModel = mongoose.model('User', userSchema, 'Users');
