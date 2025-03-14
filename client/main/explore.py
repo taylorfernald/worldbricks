@@ -30,13 +30,13 @@ class Combat():
             hit = False
             #resolve the party round
             for member in self.partyList:
-                if self.checkHit(member.attackingtype, self.defences[-1]):
+                if self.checkHit(member['damagetype'], self.defences[-1]):
                     hit = True
-                    self.hp -= member.level
+                    self.hp -= member['level']
                     if len(self.defences) > 1:
                         self.defences = self.defences[:-1]
                         text.append("Removed one tag.")
-                    text.append(member.name + " hits for " + str(member.level))
+                    text.append(member['name'] + " hits for " + str(member['level']))
                     if self.hp <= 0:
                         self.number -= 1
                         text.append("This kills " + self.monster["Name"] + "!")
@@ -45,16 +45,18 @@ class Combat():
                             text.append("No more targets left!")
                             break
                 else:
-                    text.append(member.name + " misses (wrong damage type)!")
+                    text.append(member['name'] + " misses (wrong damage type)!")
                     
             #resolve the monster round
             for i in range(self.number):
-                if self.checkHit(self.types, self.partyList[0].attackingtype):
+                if len(self.partyList) == 1:
+                    print(text.append("Something went wrong internally (party list is 0)"))
+                if self.checkHit(self.types, self.partyList[0]['damagetype']):
                     hit = True
-                    self.partyList[0].level -= self.monster['Level']
+                    self.partyList[0]['level'] -= self.monster['Level']
                     text.append(self.monster['Name'] + " " + random.choice(Actions) + " the party for " + str(self.monster['Level']) + "!")
-                    if self.partyList[0].level <= 0:
-                        text.append("It kills " + self.partyList[0].name + "!")
+                    if self.partyList[0]['level'] <= 0:
+                        text.append("It kills " + self.partyList[0]['name'] + "!")
                         del self.partyList[0]
                 else:
                     text.append(self.monster["Name"] + " misses (wrong damage type)!")
@@ -131,11 +133,11 @@ class Party():
         self.color = color
     def draw(self):
         for i, character in enumerate(self.partyList):
-            text = self.font.render(character.name + " " + str(character.level), True, self.color)
+            text = self.font.render(character['name'] + " " + str(character['level']), True, self.color)
             self.screen.blit(text, (self.screen.get_width()/4*3, self.screen.get_height()/3+(text.get_height() * i)))
             #Draw the attacking type seperately
-            if character.attackingtype == "m": attacking_sprite = melee
-            elif character.attackingtype == "r": attacking_sprite = ranged
+            if character['damagetype'] == "m": attacking_sprite = melee
+            elif character['damagetype'] == "r": attacking_sprite = ranged
             else: attacking_sprite = magic
 
             self.screen.blit(attacking_sprite, (self.screen.get_width()/4*3 - 20, self.screen.get_height()/3+(text.get_height() * i)))

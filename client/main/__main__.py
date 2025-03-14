@@ -80,19 +80,11 @@ def generatePartyMember(): #Returns a PartyMember object
     return PartyMember(memberName, memberLevel, memberClass, memberType)
 
 #Create objects here
-partyGroup = []
 UIGroup = []
 factions = []
-for i in range(4):
-    partyGroup.append(generatePartyMember())
+
 #The party needs to be drawn seperately but tracked here
 party = Marker(screen, world.getHex(world.index), party, "party", world.markerGroup, world.camera)
-
-#Strongholds
-for i in range(4):
-    world.placeStructure(Stronghold)
-
-starterDungeon = world.placeStructure(Dungeon, setName="Starting Dungeon")
 
 #Make a dummy User (don't initailize anything yet) and connect the partyUI to it
 user = User()
@@ -100,10 +92,19 @@ partyUI = PartyUI(UIGroup, screen, UIBackground, (620, 10), user)
 #Create TestMap
 testMap = Map(screen, font, user)
 
+for i in range(4):
+    user.partyList.append(generatePartyMember())
+
+if not DO_WORLD_LOAD:
+    #Strongholds
+    for i in range(4):
+        world.placeStructure(Stronghold)
+    starterDungeon = world.placeStructure(Dungeon, setName="Starting Dungeon")
+
 def checkForEncounters():
     percent = 10
     if random.randint(1, 100) < percent:
-        world.placeStructure(Lair, world.getHex(index), world.generateEncounter(monsters, world.getHex(world.index)))
+        world.placeStructure(Lair, index=world.index, setName=world.generateEncounter(monsters, world.getHex(world.index)))
 
 def move(change, index):
     if world.checkBoundaries(index, change):
@@ -113,7 +114,7 @@ def move(change, index):
             if user.rations > 0:
                 user.rations -= 1
             else:
-                del partyGroup[0]
+                del user.partyList[0]
         checkForEncounters()
         return index
 #Setup tables
@@ -128,7 +129,7 @@ while running:
     #Display
     screen.fill(background_color)
     #If at any point the partyGroup is empty, quit the game
-    if not partyGroup:
+    if not user.partyList:
         running = False
     
     if mainState == MainStates.HEXCRAWL:
@@ -169,15 +170,16 @@ while running:
                                 user.gold -= 1
                                 user.rations = user.max_rations
                                 user.torches = user.max_torches
+                                
                     if event.key == pg.K_LSHIFT and user.gold >= 1:
                         if user.hirelings+1 <= user.max_hirelings:
                             user.gold -= 1
                             user.hirelings += 1
                             user.max_rations += 1
                             user.max_torches += 1
-                        elif len(partyGroup) < 4:
+                        elif len(user.partyList) < 4:
                             user.gold -= 1
-                            partyGroup.append(generatePartyMember())
+                            user.partyList.append(generatePartyMember().toDict())
                     if event.key == pg.K_RETURN:
                         #Strongholds count as a settlement for this player.
                         if isinstance(party.getHex().token, Settlement) and user.gold >= 1:
@@ -241,8 +243,8 @@ while running:
                 user.gold += party.getHex().token.stash
                 party.getHex().token.stash = 0 
             for member in user.partyList:
-                if monster["Level"] >= member.level:
-                    member.level += 1
+                if monster["Level"] >= member['level']:
+                    member['level'] += 1
     elif mainState == MainStates.TUTORIAL:
         #Show the game "manual". Basically pages of text and images that the player can flip through
         screen.fill(BLACK)
@@ -328,6 +330,9 @@ while running:
         if DO_WORLD_LOAD: world.loadMap(user_info['terrain'])
         #Tell the other objects about the new user
         partyUI.setUser(user)
+        #Create TestMap
+        loadedMap = Map(screen, font, user)
+        currentMap = loadedMap
         #For now, skip to the gameplay
         mainState = MainStates.HEXCRAWL
 
