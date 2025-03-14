@@ -21,7 +21,7 @@ class Hex():
         self.color = color
         self.outline_color = outline_color
         self.radius = TILE_WIDTH
-        position = (index % MAP_SIZE[0], math.floor(index / MAP_SIZE[1]))
+        position = (index % MAP_SIZE[0], math.floor(index / MAP_SIZE[0]))
         self.position = (
             TILE_SCALE[0]+(position[0]*hex_distance*0.9), #How far each hex center is apart on the x axis
             TILE_SCALE[1]+
@@ -139,6 +139,7 @@ class WorldMap():
         ###Using server hex information, create a hex map
         for hex in map['hexes']:
             self.hexes.append(Hex(self.screen, hex['color'], BLACK, hex['index']))
+        print(f"Found {len(self.hexes)} hexes from terrain information.")
         for marker in map['markers']:
             Marker(self.screen, self.verifyRandomHex(), marker['type'], marker['name'], self.markerGroup, self.camera)
     

@@ -324,7 +324,8 @@ while running:
         #It has a seperate field for the terrain. Grab it
         user_info = rest.get_user_info()
         user = User(user_info)
-        #world.loadMap(user_info['terrain'])
+        
+        if DO_WORLD_LOAD: world.loadMap(user_info['terrain'])
         #Tell the other objects about the new user
         partyUI.setUser(user)
         #For now, skip to the gameplay
@@ -334,7 +335,8 @@ while running:
             if event.type == pg.QUIT:
                 running = False
 
-rest.save_user_info(user, world)
+if DO_WORLD_SAVE: rest.save_user_info(user, world) 
+else: rest.save_user_info(user)
 pg.quit()
 
 

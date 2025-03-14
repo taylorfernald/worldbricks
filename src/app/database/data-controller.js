@@ -74,7 +74,9 @@ const usersUpdateOne = (req, res) => {
       user.max_hirelings = content.max_hirelings;
       user.max_rations = content.max_rations;
       user.max_torches = content.max_torches;
-      user.terrain = content.terrain;
+      if ("terrain" in content) {
+        user.terrain = content.terrain;
+      }
 
       user.save();
       console.log("Saving complete on the server side");
