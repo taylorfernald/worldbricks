@@ -182,10 +182,10 @@ class UI():
     def get_ready(self):
         return self.info.get_ready()
 class Map():
-    def __init__(self, Surface, font, partyList, torches):
+    def __init__(self, Surface, font, user):
         #Child classes that have jobs
-        self.ge = GenerateEncounters(partyList)
-        self.ui = UI(Surface, font, partyList, self.ge.monster, torches)
+        self.ge = GenerateEncounters(user.partyList)
+        self.ui = UI(Surface, font, user.partyList, self.ge.monster, user.torches)
         self.tr = TransferRooms()
         self.monsterPresent = False
     def runCombat(self):

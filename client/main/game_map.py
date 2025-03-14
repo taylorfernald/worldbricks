@@ -13,8 +13,6 @@ from table import Table
 # (and can perform functions on it)
 
 class Hex():
-    # TODO: Change this from position based coordinates to an index based coordinates
-    #       To find the position, use the index plus the map tile width
     def __init__(self, surface, color, outline_color, index):
         self.index = index #Where the hex is when it is put into a list
         self.surface = surface
@@ -38,10 +36,12 @@ class Hex():
             (x + r * math.cos(2 * math.pi * i / n), y + r * math.sin(2 * math.pi * i / n))
             for i in range(n)
         ]
+
         pg.draw.polygon(self.surface, self.color, points)
         pg.draw.polygon(self.surface, self.outline_color, points, self.width)
-
-        if self.token: self.token.draw(self.surface)
+    def draw_structures(self):
+        if self.token: 
+            self.token.draw(self.surface)
     def toJSON(self):
         #The only two things that would be cared about are color. Position can be figured out later
         return '{"color": ' + str(list(self.color)) + ', "index": ' + str(self.index) + '}'
@@ -75,7 +75,7 @@ class Marker(pg.sprite.Sprite):
     def getHex(self):
         return self.Hex
     def draw(self, screen):
-        screen.blit(self.image, self.rect.topleft + self.camera.getOffset())
+        screen.blit(self.image, self.rect.topleft)# + self.camera.getOffset())
         #If the mouse is hovering over the marker, display its name
         screen.blit(self.nameImage, self.rect.center)
         #If the marker is a part of a faction, display its name
@@ -83,7 +83,7 @@ class Marker(pg.sprite.Sprite):
             screen.blit(self.faction.nameReady, self.rect.midtop)
     def toJSON(self):
         ### Each marker has a hex POSITION that it belongs to (position so we avoid circular references)
-        return '{"position" : ' + str(list(self.getHex().position)) + ', "type" : "' + str(type(self).__name__) + '", "name": "' + str(self.name) + '"}'
+        return '{"index" : ' + str(self.getHex().index) + ', "type" : "' + str(type(self).__name__) + '", "name": "' + str(self.name) + '"}'
 class Settlement(Marker): #You can spend gold to generate a new dungeon
     def __init__(self, surface, Hex, image, name, group, camera):
         super().__init__(surface, Hex, image, name, group, camera)
@@ -140,9 +140,15 @@ class WorldMap():
         for hex in map['hexes']:
             self.hexes.append(Hex(self.screen, hex['color'], BLACK, hex['index']))
         print(f"Found {len(self.hexes)} hexes from terrain information.")
+        assets = {
+            'Dungeon' : Dungeon,
+            'Stronghold' : Stronghold,
+            'Lair' : Lair,
+            'Marker' : Lair
+        }
         for marker in map['markers']:
-            Marker(self.screen, self.verifyRandomHex(), marker['type'], marker['name'], self.markerGroup, self.camera)
-    
+            self.placeStructure(assets[marker['type']], marker['index'], marker['name'])
+        
     def generate(self):
         #Make the map
         self.make_hex_map()
@@ -209,6 +215,12 @@ class WorldMap():
     def draw(self):
         for Hex in self.hexes:
             Hex.draw()
+        for Hex in self.hexes:
+            Hex.draw_structures()
+    
+    def addStructure(self, structure):
+        ###Adds a pre-existing structure to the markerGroup
+        self.markerGroup.add(structure)
     
     def placeStructure(self, structureClass, index=-1, setName=""):
         ###Given a structure type and other needed parameters, finds a place for it
@@ -233,4 +245,4 @@ class WorldMap():
         hexlist = ', '.join([hex.toJSON() for hex in self.hexes])
         markerGroup = ', '.join([marker.toJSON() for marker in self.markerGroup])
         ###Exports the class to JSON for network submission
-        return '{"hexes": [' + hexlist + '], "markerGroup": [' + markerGroup + ']}'
+        return '{"hexes": [' + hexlist + '], "markers": [' + markerGroup + ']}'

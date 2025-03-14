@@ -19,7 +19,7 @@ const hexSchema = new mongoose.Schema({
 })
 
 const markerSchema = new mongoose.Schema({
-  position: [Number],
+  index: Number,
   type: String,
   name: String
 })

@@ -98,7 +98,7 @@ starterDungeon = world.placeStructure(Dungeon, setName="Starting Dungeon")
 user = User()
 partyUI = PartyUI(UIGroup, screen, UIBackground, (620, 10), user)
 #Create TestMap
-testMap = Map(screen, font, partyGroup, rations)
+testMap = Map(screen, font, user)
 
 def checkForEncounters():
     percent = 10
@@ -337,6 +337,7 @@ while running:
 
 if DO_WORLD_SAVE: rest.save_user_info(user, world) 
 else: rest.save_user_info(user)
+
 pg.quit()
 
 
