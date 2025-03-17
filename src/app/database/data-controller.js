@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const users = require('./user').userModel;
+const terrain = require('./terrain').terrainModel;
 const db_connect = require('./db').connect;
 const fs = require('node:fs');
+const terrainId = "67d478eb115486e92b338b30"
 
 db_connect();
 
@@ -24,7 +26,8 @@ const usersReadOne = (req, res) => {
     users
       .findById(req.params.userid)
       .then((user) => {
-        console.log(`::${user}`);
+        user.terrain = "Hi";
+        console.log(`:: ${user}`);
         return res
             .status(200)
             .json(user);
@@ -75,7 +78,15 @@ const usersUpdateOne = (req, res) => {
       user.max_rations = content.max_rations;
       user.max_torches = content.max_torches;
       if ("terrain" in content) {
+       
         user.terrain = content.terrain;
+        // TODO: Compare this with the strongholds we already have and update any
+        terrain.findById(terrainId)
+        .then((storedTerrain) => {
+            storedTerrain.markers = content.terrain.markers;
+            storedTerrain.save();
+          }
+        )
       }
 
       user.save();

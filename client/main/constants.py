@@ -21,7 +21,7 @@ ICON_SIZE = (16, 16)
 TILE_SCALE = (TILE_WIDTH, TILE_WIDTH)
 MAP_SIZE = (12, 8)
 hex_distance = TILE_WIDTH * 1.7 #Distance between each hex center
-DO_WORLD_SAVE = False #Whether to save the world to the server (for debugging ONLY)
+DO_WORLD_SAVE = True #Whether to save the world to the server (for debugging ONLY)
 DO_WORLD_LOAD = True #Whether to load the world to the server (for debugging ONLY)
 
 pg.init()

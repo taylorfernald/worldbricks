@@ -326,6 +326,10 @@ while running:
         #It has a seperate field for the terrain. Grab it
         user_info = rest.get_user_info()
         user = User(user_info)
+
+        if not user.partyList:
+            for i in range(4):
+                user.partyList.append(generatePartyMember().toDict())
         
         if DO_WORLD_LOAD: world.loadMap(user_info['terrain'])
         #Tell the other objects about the new user
@@ -343,6 +347,7 @@ while running:
 if DO_WORLD_SAVE: rest.save_user_info(user, world) 
 else: rest.save_user_info(user)
 
+print("Closing down")
 pg.quit()
 
 
