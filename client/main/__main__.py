@@ -12,7 +12,7 @@ from resources import *
 from user import User
 from game_map import *
 from rest import *
-from worldbricks.client.main.IOTUpdater.IOTUpdater import *
+from IOTUpdater.IOTUpdater import *
 
 pg.init()
 screen = pg.display.set_mode((width, height))
