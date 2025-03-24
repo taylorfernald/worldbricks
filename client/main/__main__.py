@@ -12,6 +12,7 @@ from resources import *
 from user import User
 from game_map import *
 from rest import *
+from worldbricks.client.main.IOTUpdater.IOTUpdater import *
 
 pg.init()
 screen = pg.display.set_mode((width, height))
@@ -124,8 +125,12 @@ DepleteRations = True
 mainState = MainStates['TITLE']
 currentMap = testMap
 
+lastModified = getModified(settings_path)
+
 #Game Loop
 while running:
+    #Send information to the IoT server when file changes occur
+    detectFileChanges(settings_path)
     #Display
     screen.fill(background_color)
     #If at any point the partyGroup is empty, quit the game

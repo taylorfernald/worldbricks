@@ -1,0 +1,10 @@
+{
+    "trackerURL" : "http://localhost:4000/api/",
+    "belongsTo" : "67e167cb9df22f5982d0e1c3",
+    "parentComponent" : "192.168.0.5",
+    "selfComponent" : "192.168.0.6",
+    "port" : 800,
+    "name" : "Worldbricks Player",
+    "component" : "Worldbricks Client",
+    "_id" : "67cf3c83746247e1adbc3e6f"
+}

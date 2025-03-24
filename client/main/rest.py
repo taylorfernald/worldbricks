@@ -1,6 +1,5 @@
 #This class's job is to act as a client for the host. It sends REST requests on behalf of the game
 import requests
-import json
 
 class RestClient():
     def __init__(self, server_url):
