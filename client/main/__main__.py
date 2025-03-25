@@ -127,10 +127,13 @@ currentMap = testMap
 
 lastModified = getModified(settings_path)
 
+#For debugging, force an update to the server when everything is ready
+forceUpdate(settings_path)
+
 #Game Loop
 while running:
     #Send information to the IoT server when file changes occur
-    detectFileChanges(settings_path)
+    detectFileChanges(lastModified, settings_path)
     #Display
     screen.fill(background_color)
     #If at any point the partyGroup is empty, quit the game

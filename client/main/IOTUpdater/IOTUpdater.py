@@ -1,7 +1,8 @@
 import requests, json, os
 
 #Grab the file, get the JSON from it then send the request to the server at the correct ip
-settings_path = "./settings.json"
+settings_path = "./worldbricks/client/main/IOTUpdater/settings.json"
+print(os.getcwd())
 running = True
 
 def getModified(path):
@@ -19,7 +20,8 @@ def updateServer(settingsFile):
 
     print(f"Uploading to: {trackerURL + belongsTo}")
     try:
-        response = requests.put(trackerURL + belongsTo, json={"_id" : _id, "name" : name, "parentip" : parentComponent, "ip" : selfComponent, "port" : port, "component" : component})
+        body = {"_id" : _id, "name" : name, "parentip" : parentComponent, "ip" : selfComponent, "port" : port, "component" : component}
+        response = requests.put(trackerURL + belongsTo, json=body)
 
     except ConnectionRefusedError:
         print("Connection refused by server. Try a different URL")
@@ -44,7 +46,11 @@ def detectFileChanges(lastModified, path):
         settingsFile = json.load(settingsFile)
         updateServer(settingsFile)
 
+def forceUpdate(path):
+    settingsFile = open(path)
+    settingsFile = json.load(settingsFile)
+    updateServer(settingsFile)
 
-detectFileChangesLoop(settings_path)
+#detectFileChangesLoop(settings_path)
     
 
