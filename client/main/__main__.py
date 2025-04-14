@@ -206,7 +206,6 @@ while running:
                                 Stronghold(screen, party.getHex(), "Player", world.markerGroup, world.camera, money=1000)
             if event.type == pg.QUIT:
                 running = False
-
     elif mainState == MainStates.BATTLE:
         screen.fill((0, 0, 0))
         currentMap.draw()
