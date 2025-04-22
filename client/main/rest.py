@@ -23,8 +23,9 @@ class RestClient():
             self.busy = True
             print("Sending request...")
             #Using the userkey, get the user info
-            print(f"{self.url}/{self.userkey}/info")
-            response = requests.get(self.url + f"{self.userkey}/info")
+            pathstring = f"{self.url}{self.userkey}/info"
+            print(pathstring)
+            response = requests.get(pathstring)
             response = response.json()
             print(response)
             return response
