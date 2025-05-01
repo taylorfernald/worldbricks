@@ -37,6 +37,7 @@ torches = 4
 max_torches = 4
 hirelings = 0
 max_hirelings = 4
+STRONGHOLD_COST = 1
 
 #Connection Information
 server_url = "http://localhost:4000/api/"

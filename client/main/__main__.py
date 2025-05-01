@@ -105,7 +105,9 @@ if not DO_WORLD_LOAD:
 def checkForEncounters():
     percent = 10
     if random.randint(1, 100) < percent:
-        world.placeStructure(Lair, index=world.index, setName=world.generateEncounter(monsters, world.getHex(world.index)))
+        encounter = world.generateEncounter(world.getHex(world.index))
+        if encounter != -1:
+            world.placeStructure(structureClass=Lair, index=world.index, setName=encounter['Name'])
 
 def move(change, index):
     if world.checkBoundaries(index, change):
@@ -173,7 +175,7 @@ while running:
                         change = 1
                     if change and world.checkBoundaries(world.index, change):
                         world.index = move(change, world.index)
-                    if event.key == pg.K_RSHIFT and user.gold >= 1:
+                    if event.key == pg.K_RSHIFT and user.gold >= 1000:
                         if isinstance(party.getHex().token, Stronghold):
                                 user.gold -= 1
                                 user.rations = user.max_rations
@@ -201,9 +203,9 @@ while running:
                         else:
                             #otherwise, assuming the player has enough money, they can build a settlement here.
                             #The defenses scale with how much money the stronghold has. 
-                            if user.gold >= 1:
-                                user.gold -= 1000
-                                Stronghold(screen, party.getHex(), "Player", world.markerGroup, world.camera, money=1000)
+                            if user.gold >= STRONGHOLD_COST:
+                                user.gold -= STRONGHOLD_COST
+                                world.placeStructure(Stronghold, world.index, f"{user.displayname}")
             if event.type == pg.QUIT:
                 running = False
     elif mainState == MainStates.BATTLE:
@@ -333,12 +335,13 @@ while running:
         #It has a seperate field for the terrain. Grab it
         user_info = rest.get_user_info()
         user = User(user_info)
-
         if not user.partyList:
             for i in range(4):
                 user.partyList.append(generatePartyMember().toDict())
         
-        if DO_WORLD_LOAD: world.loadMap(user_info['terrain'])
+        if DO_WORLD_LOAD: 
+            world.loadMap(user_info['terrain'], user.position_index)
+            party.setHex(world.getHex(world.index))
         #Tell the other objects about the new user
         partyUI.setUser(user)
         #Create TestMap
@@ -351,7 +354,9 @@ while running:
             if event.type == pg.QUIT:
                 running = False
 
-if DO_WORLD_SAVE: rest.save_user_info(user, world) 
+if DO_WORLD_SAVE: 
+    user.position_index = world.index
+    rest.save_user_info(user, world) 
 else: rest.save_user_info(user)
 
 print("Closing down")

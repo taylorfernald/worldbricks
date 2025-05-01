@@ -102,7 +102,7 @@ class Dungeon(Marker):
         super().__init__(surface, Hex, dungeon, name, group, camera)
 class Stronghold(Marker): #A player-made structure that can be attacked
     def __init__(self, surface, Hex, name, group, camera, type=0, numbers=1, money = 0):
-        super().__init__(surface, Hex, stronghold, name + "'s Stronghold", group, camera)
+        super().__init__(surface, Hex, stronghold, name, group, camera)
         #Has a monster entry for the defender
         self.defender = DefenderList[type]
         self.numbers = numbers
@@ -131,12 +131,16 @@ class WorldMap():
 
         self.locations = [] #A list of all locations. For checking every location
         self.imax, self.jmax = MAP_SIZE
-        self.index = random.randint(0, (MAP_SIZE[0] * MAP_SIZE[1]) - 1) #where the party is rn
+        self.index = random.randint(0, (MAP_SIZE[0] * MAP_SIZE[1]) - 1) #where the party is rn, found in user when it loads in
         self.camera = Camera(self.index)
         self.markerGroup = pg.sprite.Group()
         self.monsterList = Table(MonsterList)
-    def loadMap(self, map):
+    def loadMap(self, map, position_index):
         ###Using server hex information, create a hex map
+
+        locations = []
+        self.markerGroup.empty()
+
         for hex in map['hexes']:
             self.hexes.append(Hex(self.screen, hex['color'], BLACK, hex['index']))
         print(f"Found {len(self.hexes)} hexes from terrain information.")
@@ -148,6 +152,7 @@ class WorldMap():
         }
         for marker in map['markers']:
             self.placeStructure(assets[marker['type']], marker['index'], marker['name'])
+        self.index = position_index
         
     def generate(self):
         #Make the map
@@ -156,6 +161,7 @@ class WorldMap():
         self.runMountainsAlgorithm(self.hexes[startingHexIndex], startingHexIndex, 0, 1)
     def reset(self):
         #Generate wrapper that shows a warning beforehand.
+        print("REGENERATING")
         return self.generate()
     def make_hex_map(self):
         #Make the hex map; make each hex in the right position
@@ -194,6 +200,8 @@ class WorldMap():
         if not Hex.token:
             #Use the monster table to make an encounter. Gives the encounter back.
             return self.monsterList.generateItem()
+        else:
+            return -1
     def getRandomHex(self):
         ix = random.randint(0, self.imax-1)
         iy = random.randint(0, self.jmax-1)
@@ -222,7 +230,7 @@ class WorldMap():
         ###Adds a pre-existing structure to the markerGroup
         self.markerGroup.add(structure)
     
-    def placeStructure(self, structureClass, index=-1, setName=""):
+    def placeStructure(self, structureClass=Marker, index=-1, setName=""):
         ###Given a structure type and other needed parameters, finds a place for it
         ###Returns structure if placed
         ###Prioritizes the index if one is given

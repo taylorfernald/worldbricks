@@ -14,11 +14,16 @@ const userSchema = new mongoose.Schema({
     required: true,
     default: "Unnamed User"                        
   },
+  position_index: {type: Number, default: 0},
   gold : {type: Number, default: 0},
-  hirelings : {type: Number, default: 0},
   party: [characterSchema],
-  rations : {type: Number, default: 0},
-  terrain: {type: terrainSchema}
+  rations : {type: Number, default: 4},
+  max_rations : {type: Number, default: 4},
+  terrain: {type: terrainSchema},
+  torches : {type: Number, default: 4},
+  max_torches : {type: Number, default: 4},
+  hirelings : {type: Number, default: 0},
+  max_hirelings: {type: Number, default: 4}
 });
 
 const userModel = mongoose.model('User', userSchema, 'Users');

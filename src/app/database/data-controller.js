@@ -22,15 +22,29 @@ const usersCreate = (req, res) => {
     }
   })
 };
-const usersReadOne = (req, res) => {
+const usersReadOne = async (req, res) => {
+    const terrainToSend = await terrain.findById(terrainId);
     users
       .findById(req.params.userid)
       .then((user) => {
-        user.terrain = "Hi";
-        console.log(`:: ${user}`);
+        userToSend = {
+          _id: user._id,
+          name: user.name,
+          position_index : user.position_index,
+          gold: user.gold,
+          party: user.party,
+          rations: user.rations,
+          max_rations: user.max_rations,
+          torches: user.torches,
+          max_torches: user.max_torches,
+          hirelings: user.hirelings,
+          max_hirelings: user.max_hirelings,
+          terrain: terrainToSend
+        }
+        console.log(`:: ${userToSend}`);
         return res
             .status(200)
-            .json(user);
+            .json(userToSend);
       })
       .catch((err) => {
         console.log(`There was an error: ${err}`);
@@ -39,6 +53,8 @@ const usersReadOne = (req, res) => {
             .json(err)
       })
 };
+
+//Used for saving
 const usersUpdateOne = (req, res) => {
   if (!req.params.userid) {
     return res
@@ -47,6 +63,7 @@ const usersUpdateOne = (req, res) => {
         "message": "Not found, userid is required"
       });
   }
+
   file = fs.createWriteStream('./req.txt');
   req.pipe(file); //This reads the body to a text file correctly
   console.log("Saving server side.");
@@ -63,9 +80,8 @@ const usersUpdateOne = (req, res) => {
 
   req.on('end', () => {
     content = JSON.parse(chunks.join('').replace(/\\/g, '').slice(1, -1));
-    console.log(typeof(content));
   });
-
+  
   users
     .findById(req.params.userid)
     .then((user) => {
@@ -77,9 +93,10 @@ const usersUpdateOne = (req, res) => {
       user.max_hirelings = content.max_hirelings;
       user.max_rations = content.max_rations;
       user.max_torches = content.max_torches;
+      user.position_index = content.position_index;
+
+      //TODO: Change this to update the terrain collection.
       if ("terrain" in content) {
-       
-        user.terrain = content.terrain;
         // TODO: Compare this with the strongholds we already have and update any
         terrain.findById(terrainId)
         .then((storedTerrain) => {

@@ -5,11 +5,10 @@ import json
 
 class User:
     def __init__(self, userinfo={}):
-        #displayname, rations, max_rations, gold, torches, max_torches, hirelings, max_hirelings, partyList):
-        #TODO: Change this so it accepts JSON / Dictionary and parses it.
         if userinfo:
             self.displayname = userinfo['name']
             self.userid = userinfo['_id']
+            self.position_index = userinfo['position_index']
             self.password = ""
             self.rations = userinfo['rations']
             self.max_rations = userinfo['max_rations'] 
