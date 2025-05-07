@@ -32,11 +32,12 @@ def updateServer(settingsFile):
     finally:
         print(f"Completed updating attempt.")
 
-def detectFileChangesLoop(path):
+def detectFileChangesLoop(lastModified, path):
     print(f"Checking for changes on file path {path}.")
     lastModified = getModified(path)
     while running:
         detectFileChanges(lastModified, path)
+    return lastModified
 
 def detectFileChanges(lastModified, path):
     currentModified = getModified(path)
@@ -45,6 +46,7 @@ def detectFileChanges(lastModified, path):
         settingsFile = open(path)
         settingsFile = json.load(settingsFile)
         updateServer(settingsFile)
+    return lastModified
 
 def forceUpdate(path):
     settingsFile = open(path)

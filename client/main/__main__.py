@@ -135,7 +135,7 @@ forceUpdate(settings_path)
 #Game Loop
 while running:
     #Send information to the IoT server when file changes occur
-    detectFileChanges(lastModified, settings_path)
+    lastModified = detectFileChanges(lastModified, settings_path)
     #Display
     screen.fill(background_color)
     #If at any point the partyGroup is empty, quit the game

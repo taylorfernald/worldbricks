@@ -40,7 +40,7 @@ max_hirelings = 4
 STRONGHOLD_COST = 1
 
 #Connection Information
-server_url = "http://localhost:4000/api/"
+server_url = "http://localhost:4001/api/"
 
 pages_path = ROOT + "text/page"
 WORDS = ROOT + "main/words.txt"
